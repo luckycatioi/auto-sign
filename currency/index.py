@@ -8,11 +8,11 @@ from datetime import datetime, timedelta, timezone
 
 ############配置############
 Cookies = {
-    'acw_tc': '',
-    'MOD_AUTH_CAS': '',
+    'MOD_AUTH_CAS': 'z84zGXPxMSiVcn1gvdmR2I1587340668',
+    'acw_tc': '2f624a5015998809882496111e41b1b1804e3584a09ba3a3ae641ab981fb6e'
 }
-CpdailyInfo = ''
-sessionToken = ''
+CpdailyInfo = 'Iy86UyNyPEa1NIV54RCKNkI38/Nb4DOlV+FYg5gLNk54541h1Ja1wDtSb2NoeQa3TZdAf73HiZ5saw/1AqsdpH4KC/DsZKrrP85wjcHoE11TY0LCfsWLvr5Ac9LsCpNEWNE0WVQz0lc6Y5enzbepkFWFE+24g1b1762UeaDA8UQPMUVayIVf3O+GEZ9AAreTWg3LewIfghLVJRTFKHQZilS+TyIkYdz0cEltD54Qg0oBnEY4JEBoYgwab2Rl15b4DICKwDf4/mqHm8cT7ke1UhyZfUQqJHHr'
+sessionToken = 'd637296f-d22a-407c-9c1b-69b6deb49858'
 ############配置############
 
 # 全局
@@ -56,13 +56,15 @@ def getUnSignedTasks():
         'Accept': 'application/json, text/plain, */*',
         'Origin': 'https://' + host,
         'X-Requested-With': 'XMLHttpRequest',
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 cpdaily/8.0.8 wisedu/8.0.8',
+        'User-Agent':
+        'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 cpdaily/8.0.8 wisedu/8.0.8',
         'Content-Type': 'application/json',
         'Accept-Encoding': 'gzip,deflate',
         'Accept-Language': 'zh-CN,en-US;q=0.8',
     }
     params = {}
-    url = 'https://{host}/wec-counselor-sign-apps/stu/sign/getStuSignInfosInOneDay'.format(host=host)
+    url = 'https://{host}/wec-counselor-sign-apps/stu/sign/getStuSignInfosInOneDay'.format(
+        host=host)
     res = session.post(url=url, headers=headers, data=json.dumps(params))
     # log(res.json())
     unSignedTasks = res.json()['datas']['unSignedTasks']
@@ -80,15 +82,18 @@ def getUnSignedTasks():
 def getDetailTask(params):
     headers = {
         'Accept': 'application/json, text/plain, */*',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+        'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
         'content-type': 'application/json',
         'Accept-Encoding': 'gzip,deflate',
         'Accept-Language': 'zh-CN,en-US;q=0.8',
         'Content-Type': 'application/json;charset=UTF-8'
     }
     res = session.post(
-        url='https://{host}/wec-counselor-sign-apps/stu/sign/detailSignInstance'.format(host=host),
-        headers=headers, data=json.dumps(params))
+        url='https://{host}/wec-counselor-sign-apps/stu/sign/detailSignInstance'
+        .format(host=host),
+        headers=headers,
+        data=json.dumps(params))
     data = res.json()['datas']
     return data
 
@@ -104,14 +109,16 @@ def fillForm(task):
         for i in range(0, len(extraFields)):
             default = defaults[i]['default']
             extraField = extraFields[i]
-            if default['title'] != extraField['title']:
-                log('第%d个默认配置项错误，请检查' % (i + 1))
-                exit(-1)
+            # if default['title'] != extraField['title']:
+            #     log('第%d个默认配置项错误，请检查' % (i + 1))
+            #     exit(-1)
             extraFieldItems = extraField['extraFieldItems']
             for extraFieldItem in extraFieldItems:
                 if extraFieldItem['content'] == default['value']:
-                    extraFieldItemValue = {'extraFieldItemValue': default['value'],
-                                           'extraFieldItemWid': extraFieldItem['wid']}
+                    extraFieldItemValue = {
+                        'extraFieldItemValue': default['value'],
+                        'extraFieldItemWid': extraFieldItem['wid']
+                    }
                     extraFieldItemValues.append(extraFieldItemValue)
         # log(extraFieldItemValues)
         # 处理带附加选项的签到
@@ -131,7 +138,8 @@ def fillForm(task):
 def submitForm(form):
     headers = {
         # 'tenantId': '1019318364515869',
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; OPPO R11 Plus Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 okhttp/3.12.4',
+        'User-Agent':
+        'Mozilla/5.0 (Linux; Android 4.4.4; OPPO R11 Plus Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 okhttp/3.12.4',
         'CpdailyStandAlone': '0',
         'extension': '1',
         'Cpdaily-Extension': CpdailyInfo,
@@ -140,8 +148,11 @@ def submitForm(form):
         # 'Host': 'swu.cpdaily.com',
         'Connection': 'Keep-Alive'
     }
-    res = session.post(url='https://{host}/wec-counselor-sign-apps/stu/sign/submitSign'.format(host=host),
-                       headers=headers, data=json.dumps(form))
+    res = session.post(
+        url='https://{host}/wec-counselor-sign-apps/stu/sign/submitSign'.
+        format(host=host),
+        headers=headers,
+        data=json.dumps(form))
     message = res.json()['message']
     if message == 'SUCCESS':
         log('自动签到成功')
@@ -157,8 +168,13 @@ def sendMessage(msg, email):
     send = email
     if send != '':
         log('正在发送邮件通知。。。')
-        res = requests.post(url='http://www.zimo.wiki:8080/mail-sender/sendMail',
-                            data={'title': '今日校园自动签到结果通知', 'content': msg, 'to': send})
+        res = requests.post(
+            url='http://www.zimo.wiki:8080/mail-sender/sendMail',
+            data={
+                'title': '今日校园自动签到结果通知',
+                'content': msg,
+                'to': send
+            })
         code = res.json()['code']
         if code == 0:
             log('发送邮件通知成功。。。')
@@ -168,9 +184,7 @@ def sendMessage(msg, email):
 
 
 def main():
-    data = {
-        'sessionToken': sessionToken
-    }
+    data = {'sessionToken': sessionToken}
     login.getModAuthCas(data)
     params = getUnSignedTasks()
     # log(params)
